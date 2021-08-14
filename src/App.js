@@ -6,32 +6,56 @@ import WebsiteFooter from "./components/common/WebsiteFooter";
 import Home from "./components/home/Home";
 
 import { Layout } from "antd";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { LoginPage } from "./components/loginPage/LoginPage";
 
-function App() {
+const App = () => {
+  const [isLogin, setIsLogin] = useState(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    const isLogin = localStorage.getItem("isLogin");
+    if (!isLogin) {
+      console.log(`isLogin`, isLogin);
+      history.push("/login");
+    }
+  }, [isLogin]);
+
+  if (!isLogin) {
+    return (
+      <Route exact path="/login">
+        <LoginPage setIsLogin={setIsLogin} />
+      </Route>
+    );
+  }
+
   return (
-    <Layout className="layout">
-      <NavHeader />
+    <>
       <Switch>
-        <Route path="/">
-          <Home />
-        </Route>
-        <Route path="app">
-          <Home />
-        </Route>
-        <Route path="/home">
-          <Home />
-        </Route>
-        <Route path="/list">
-          <Home />
-        </Route>
-        <Route path="/app">
-          <Home />
-        </Route>
+        <Layout className="layout">
+          <NavHeader />
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="app">
+            <Home />
+          </Route>
+          <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path="/list">
+            <Home />
+          </Route>
+          <Route exact path="/app">
+            <Home />
+          </Route>
+
+          <WebsiteFooter />
+        </Layout>
       </Switch>
-      <WebsiteFooter />
-    </Layout>
+    </>
   );
-}
+};
 
 export default App;
